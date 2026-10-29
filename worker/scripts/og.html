@@ -1,0 +1,79 @@
+<!doctype html>
+<!-- 공유 미리보기 이미지(og:image, 1200x630) 원본.
+     다시 만들 때: chrome --headless=new --window-size=1200,630 --screenshot=public/img/og.png scripts/og.html -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #f6f7fb;
+    font-family: "Pretendard", system-ui, sans-serif;
+    color: #16181f;
+    position: relative;
+  }
+  .left { position: absolute; left: 80px; top: 158px; }
+  .brand { font-size: 38px; font-weight: 800; color: #4f5bff; letter-spacing: -.02em; }
+  h1 { font-size: 66px; font-weight: 800; letter-spacing: -.03em; margin-top: 14px; line-height: 1.1; }
+  .sub { margin-top: 26px; font-size: 30px; line-height: 1.55; color: #636878; letter-spacing: -.01em; }
+  .url {
+    display: inline-block; margin-top: 34px; padding: 10px 34px;
+    background: #4f5bff; color: #fff; font-size: 28px; font-weight: 700; border-radius: 999px;
+  }
+
+  .card {
+    position: absolute; left: 640px; top: 86px; width: 480px; height: 460px;
+    background: #fff; border: 2px solid #e3e5ec; border-radius: 22px;
+  }
+  .paper {
+    position: absolute; left: 70px; top: 42px; width: 200px; height: 270px;
+    background: #fff; border: 2px solid #e3e5ec;
+  }
+  .paper::after { /* 접힌 귀퉁이 */
+    content: ""; position: absolute; right: -2px; top: -2px; width: 40px; height: 40px;
+    background: linear-gradient(225deg, #f6f7fb 50%, #c7ccff 50%);
+  }
+  .paper .h { position: absolute; left: 24px; top: 36px; width: 110px; height: 14px; background: #16181f; }
+  .paper i { position: absolute; left: 24px; height: 9px; background: #e3e5ec; }
+  .send {
+    position: absolute; left: 300px; top: 136px; width: 92px; height: 92px; background: #4f5bff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .send svg { width: 48px; height: 48px; }
+  .row { position: absolute; left: 40px; right: 40px; top: 344px; display: flex; align-items: center; justify-content: space-between;
+    border-top: 3px solid #16181f; padding-top: 22px; }
+  .num { font-size: 34px; font-weight: 800; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+  .ok { font-size: 26px; font-weight: 800; color: #1e9e6a; }
+  .label { position: absolute; left: 40px; top: 400px; font-size: 20px; color: #636878; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="brand">glotfax</div>
+    <h1>팩스 보내기</h1>
+    <p class="sub">PDF · 문서 · 사진<br>올리면 바로 팩스로 보냅니다</p>
+    <span class="url">github.com/real21c/glotfax</span>
+  </div>
+
+  <div class="card">
+    <div class="paper">
+      <div class="h"></div>
+      <i style="top:78px;width:150px"></i>
+      <i style="top:102px;width:150px"></i>
+      <i style="top:126px;width:130px"></i>
+      <i style="top:162px;width:150px"></i>
+      <i style="top:186px;width:150px"></i>
+      <i style="top:210px;width:90px"></i>
+    </div>
+    <div class="send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+    </div>
+    <div class="row">
+      <span class="num">02-1234-5678</span>
+      <span class="ok">완료</span>
+    </div>
+  </div>
+</body>
+</html>

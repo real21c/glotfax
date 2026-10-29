@@ -1,0 +1,27 @@
+node_modules/
+dist/
+
+# Cloudflare 로컬 상태·비밀값
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# 에이전트 설정(토큰 포함)·작업 파일
+.env
+.env.*
+!.env.example
+agent/data/
+
+# 비밀정보
+*.key
+*.pem
+*.token
+secrets*
+credentials*
+
+.DS_Store
+Thumbs.db
+
+# 로컬 도구 설정
+.vscode/

@@ -1,0 +1,16 @@
+{
+  "name": "glotfax",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Turn a PC with a fax-capable printer into a remote fax gateway",
+  "workspaces": [
+    "worker",
+    "agent"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w worker",
+    "agent": "npm run start -w agent",
+    "typecheck": "npm run typecheck -w worker && npm run typecheck -w agent"
+  }
+}

@@ -1,0 +1,23 @@
+# 리눅스 게이트웨이에서 에이전트 자동 실행 (systemd)
+#   1. <에이전트 폴더>, <사용자> 를 바꾼다
+#   2. sudo cp glotfax-agent.service /etc/systemd/system/
+#   3. sudo systemctl daemon-reload && sudo systemctl enable --now glotfax-agent
+#   로그: journalctl -u glotfax-agent -f
+#
+# epson 백엔드는 root 로 실행해도 되고, hp 백엔드(hp-sendfax)는 root 로 안 돌아서 일반 사용자로 실행한다.
+
+[Unit]
+Description=glotfax fax agent
+After=network-online.target cups.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=<사용자>
+WorkingDirectory=<에이전트 폴더>
+ExecStart=/usr/bin/env node --env-file=.env src/index.ts
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

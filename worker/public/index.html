@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>glotfax · 팩스 보내기</title>
+  <meta name="description" content="PDF, 문서, 사진을 올리면 게이트웨이의 팩스 회선으로 바로 보냅니다. 받는 쪽에는 게이트웨이의 팩스 번호가 표시됩니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="glotfax">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="glotfax · 팩스 보내기">
+  <meta property="og:description" content="PDF, 문서, 사진을 올리면 게이트웨이의 팩스 회선으로 바로 보냅니다. 받는 쪽에는 게이트웨이의 팩스 번호가 표시됩니다.">
+  <meta property="og:image" content="/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#4f5bff">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="/">glotfax</a>
+      <nav id="menu" hidden>
+        <a class="active" href="#" data-view="send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          보내기
+        </a>
+        <a href="#settings" data-view="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          설정
+        </a>
+      </nav>
+      <div class="nav-right">
+        <span id="gateway-status" class="pill gray" hidden><i class="dot"></i><span class="label-long"></span><span class="label-short"></span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- 로그인 -->
+    <section id="login-view" class="wrap" hidden>
+      <div class="hero login">
+        <h1>로그인</h1>
+        <p>팩스를 보내려면 비밀번호를 넣어 주세요.</p>
+        <form id="login-form" autocomplete="on">
+          <div class="field">
+            <label for="password">비밀번호</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <p id="login-error" class="form-err" role="alert" hidden></p>
+          <button type="submit" class="btn primary lg">로그인</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 보내기: 왼쪽 메뉴(보내기 · 보낸 기록), 좁은 화면은 가로 탭. 주소는 #send/<항목> -->
+    <form id="send-view" class="wrap" novalidate hidden>
+      <div class="menu-page">
+        <div class="hero">
+          <h1><em>팩스</em> 보내기</h1>
+        </div>
+
+        <div class="menu-body">
+        <nav class="tabs" id="send-tabs" aria-label="보내기 항목">
+          <a href="#send/new" data-tab="new">보내기</a>
+          <a href="#send/history" data-tab="history">보낸 기록</a>
+          <a href="#send/stats" data-tab="stats">통계</a>
+        </nav>
+
+        <div class="panels">
+        <section class="panel" data-panel="new">
+          <div class="field file-field">
+          <label id="dropzone" class="drop" for="file">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/></svg></span>
+            <h3 id="file-title">파일 첨부</h3>
+            <span id="max-size" hidden>30MB</span>
+            <input id="file" name="file" type="file" multiple accept="application/pdf,.pdf,text/plain,.txt,image/jpeg,.jpg,.jpeg,image/png,.png">
+          </label>
+          <ul id="file-list" class="file-list" hidden></ul>
+          </div>
+
+          <div class="field">
+            <label for="fax-number">받는 팩스 번호</label>
+            <input id="fax-number" class="number" name="faxNumber" type="tel" inputmode="tel" placeholder="02-1234-5678" autocomplete="off" required>
+            <div id="recent-numbers" class="recent"></div>
+          </div>
+
+          <div class="field" id="gateway-field" hidden>
+            <label for="gateway">보낼 게이트웨이</label>
+            <select id="gateway" name="gatewayId"></select>
+          </div>
+
+          <p id="summary" class="form-err" role="alert" hidden></p>
+          <div class="actions"><button id="send-button" type="submit" class="btn primary lg">팩스 보내기</button></div>
+        </section>
+
+        <section class="panel" data-panel="history">
+          <h2>보낸 기록</h2>
+          <p class="desc">보내는 중인 팩스는 지금 어느 단계인지 보이고, 끝난 팩스는 전송 기록에서 시도별 기록을 볼 수 있어요.</p>
+          <table id="jobs-table" hidden>
+            <thead>
+              <tr><th>보낸 일시</th><th>받는 번호</th><th class="file">파일</th><th class="state">상태</th></tr>
+            </thead>
+            <tbody id="jobs"></tbody>
+          </table>
+          <div id="jobs-empty" class="empty-state" hidden>아직 보낸 팩스가 없어요</div>
+        </section>
+
+        <section class="panel" data-panel="stats">
+          <h2>통계</h2>
+          <p class="desc">날짜별로 보낸 팩스 건수예요.</p>
+          <div id="stats-today" class="stat-today" hidden>
+            <b>오늘</b><em id="stats-today-count">0</em><span>건</span>
+            <span id="stats-today-sub" class="sub"></span>
+          </div>
+          <div class="field" id="week-field" hidden>
+            <select id="week-select" aria-label="주 고르기"></select>
+          </div>
+          <table id="daily-table" hidden>
+            <thead>
+              <tr><th>날짜</th><th class="n">보냄</th><th class="n">완료</th><th class="n">실패</th></tr>
+            </thead>
+            <tbody id="daily-rows"></tbody>
+          </table>
+          <div id="daily-empty" class="empty-state" hidden>아직 보낸 팩스가 없어요</div>
+        </section>
+        </div>
+        </div>
+      </div>
+
+    </form>
+    <!-- 설정 -->
+    <section id="settings-view" class="wrap" hidden>
+      <div class="menu-page">
+        <div class="hero">
+          <h1>설정</h1>
+        </div>
+
+        <!-- 왼쪽 메뉴(좁은 화면에서는 가로 탭): 항목 하나씩 보여 준다. 주소는 #settings/<항목> -->
+        <div class="menu-body">
+        <nav class="tabs" id="settings-tabs" aria-label="설정 항목">
+          <a href="#settings/fax" data-tab="fax">게이트웨이</a>
+          <a href="#settings/number" data-tab="number">받는 번호</a>
+          <a href="#settings/password" data-tab="password">비밀번호</a>
+          <a href="#settings/history" data-tab="history">로그인 기록</a>
+          <a href="#settings/logout" data-tab="logout">로그아웃</a>
+        </nav>
+
+        <div class="panels">
+        <section class="panel" data-panel="fax">
+          <h2>게이트웨이</h2>
+          <p class="desc">팩스를 실제로 보내는 게이트웨이(복합기가 연결된 PC)와, 보낼 때 쓸 복합기 드라이버를 골라요.</p>
+          <div id="gateway-settings"></div>
+        </section>
+
+        <section class="panel" data-panel="number">
+          <h2>기본 받는 번호</h2>
+          <p class="desc">보낸 기록이 없을 때 받는 번호 칸에 미리 채워 두는 번호예요.</p>
+          <form id="default-number-form" novalidate>
+            <div class="field">
+              <label for="default-number">번호</label>
+              <input id="default-number" class="number" type="tel" inputmode="tel" placeholder="02-1234-5678" autocomplete="off">
+            </div>
+            <p id="default-number-msg" class="form-err" role="alert" hidden></p>
+            <div class="actions"><button type="submit" class="btn primary">저장</button></div>
+          </form>
+        </section>
+
+        <section class="panel" data-panel="password">
+          <h2>비밀번호 바꾸기</h2>
+          <p class="desc">바꾸면 다른 기기에서는 새 비밀번호로 다시 로그인해야 해요.</p>
+          <form id="password-form" autocomplete="on" novalidate>
+            <input type="text" name="username" value="glotfax" autocomplete="username" hidden>
+            <div class="field">
+              <label for="current-password">지금 비밀번호</label>
+              <input id="current-password" type="password" autocomplete="current-password" required>
+            </div>
+            <div class="field">
+              <label for="new-password">새 비밀번호 (4자 이상)</label>
+              <input id="new-password" type="password" autocomplete="new-password" minlength="4" required>
+            </div>
+            <div class="field">
+              <label for="new-password-2">새 비밀번호 확인</label>
+              <input id="new-password-2" type="password" autocomplete="new-password" minlength="4" required>
+            </div>
+            <p id="password-msg" class="form-err" role="alert" hidden></p>
+            <div class="actions"><button type="submit" class="btn primary">비밀번호 바꾸기</button></div>
+          </form>
+        </section>
+
+        <section class="panel" data-panel="history">
+          <h2>로그인 기록</h2>
+          <p class="desc">누가 언제 어디서 로그인했는지 최근 30건이에요. 모르는 기기나 IP 가 있으면 비밀번호를 바꾸고 모든 기기에서 로그아웃하세요.</p>
+          <table id="access-table" class="access" hidden>
+            <thead>
+              <tr><th>일시</th><th>내용</th><th>접속 환경</th></tr>
+            </thead>
+            <tbody id="access-logs"></tbody>
+          </table>
+          <div id="access-empty" class="empty-state" hidden>아직 기록이 없어요</div>
+        </section>
+
+        <section class="panel" data-panel="logout">
+          <h2>로그아웃</h2>
+          <p class="desc">이 기기만 로그아웃하거나, 로그인된 모든 기기를 한 번에 로그아웃할 수 있어요.</p>
+          <div class="choice">
+            <div>
+              <b>이 기기에서 로그아웃</b>
+              <p>지금 쓰는 이 브라우저(앱)만 로그아웃해요.</p>
+              <button id="logout" class="btn" type="button">이 기기에서 로그아웃</button>
+            </div>
+            <div>
+              <b>모든 기기에서 로그아웃</b>
+              <p>휴대폰을 잃어버렸거나 다른 사람이 로그인한 것 같을 때 누르세요. 비밀번호는 그대로이고, 모든 기기에서 다시 로그인해야 해요.</p>
+              <button id="logout-all" class="btn danger" type="button">모든 기기에서 로그아웃</button>
+            </div>
+          </div>
+        </section>
+        </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 안내 모달 (설정에서 쓸 수 없는 드라이버를 고르면 무엇을 하면 되는지 보여 준다) -->
+  <div id="modal" class="modal-bg" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3 id="modal-title"></h3>
+      <div id="modal-body" class="modal-body"></div>
+      <div class="foot">
+        <button id="modal-close" type="button" class="btn primary">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">
+    <div class="stats-bar"><div class="wrap"><span class="sb-gal"><span class="sb"><b>TODAY</b><em id="stat-today">–</em></span><span class="sb"><b>TOTAL</b><em id="stat-total">–</em></span></span><span class="sb conv">지금까지 전체 <em id="stat-sent">–</em>건 전송</span></div></div>
+    <div class="foot-social">
+      <a class="ig" href="https://www.instagram.com/now100k_official" target="_blank" rel="noopener noreferrer" aria-label="now100k 인스타그램" title="@now100k_official"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"></circle></svg></a>
+    </div>
+    <div>© 2026 <a class="brandmark" href="https://www.instagram.com/now100k_official" target="_blank" rel="noopener noreferrer" title="now100k 인스타그램">now100k</a>. All rights reserved. Developed by <b class="brandmark">dongmin</b>.</div>
+    <div class="foot-links"><a href="/terms">이용약관 · 금지 콘텐츠</a><span class="sep">·</span><a href="/privacy">개인정보처리방침</a><span class="sep">·</span><a href="/help">신고 · 문의</a></div>
+  </footer>
+</body>
+</html>

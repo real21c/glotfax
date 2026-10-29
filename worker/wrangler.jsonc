@@ -1,0 +1,49 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "glotfax",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+
+  // 서비스 주소 (선택). 내 도메인을 쓰려면 주석을 풀고 바꾼다. 없으면 <이름>.<계정>.workers.dev 로 열린다
+  // "routes": [{ "pattern": "fax.example.com", "custom_domain": true }],
+
+  // 웹 화면(PWA). /api/* 와 /share 는 Worker 가 먼저 처리
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/share"]
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "glotfax",
+      "database_id": "<wrangler d1 create glotfax 로 나온 database_id>",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "FILES",
+      "bucket_name": "glotfax-files"
+    }
+  ],
+
+  // 게이트웨이마다 하나. 에이전트 WebSocket 을 들고 있다가 작업을 바로 넘긴다
+  "durable_objects": {
+    "bindings": [{ "name": "GATEWAY_HUB", "class_name": "GatewayHub" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["GatewayHub"] }],
+
+  // 보관 기간(RETENTION_DAYS)이 지난 PDF 정리
+  "triggers": { "crons": ["0 18 * * *"] },
+
+  "vars": {
+    "RETENTION_DAYS": "3",
+    "MAX_FILE_MB": "10",
+    // IP 옆에 붙일 이름표 (로그인 기록 · 전송 기록). 예: {"1.2.3.4": "본사"}
+    "IP_LABELS": "{}"
+  }
+  // 비밀값(SESSION_SECRET, ADMIN_TOKEN)은 로컬은 .dev.vars, 배포는 `wrangler secret put`
+}

@@ -1,0 +1,4 @@
+# 이 파일을 .dev.vars 로 복사하고 값을 바꾼다. .dev.vars 는 커밋하지 않는다.
+# 값 만들기: node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+SESSION_SECRET=change-me
+ADMIN_TOKEN=change-me

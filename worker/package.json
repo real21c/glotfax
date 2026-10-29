@@ -1,0 +1,23 @@
+{
+  "name": "@glotfax/worker",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply glotfax --local",
+    "db:migrate:remote": "wrangler d1 migrations apply glotfax --remote",
+    "icons": "node scripts/make-icons.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "4.13.14"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261026.1",
+    "typescript": "7.0.2",
+    "wrangler": "4.152.0"
+  }
+}
